@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Choomantar Gali — Fantasy Merchandise</title>
+  <meta name="description" content="Choomantar Gali - buy fan merchandise from Marvel, DC, Harry Potter, Disney and more." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --accent:#6b46c1;
+      --muted:#6b7280;
+      --bg:#0f172a;
+      --card:#0b1220;
+      --glass: rgba(255,255,255,0.03);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      margin:0;
+      background: linear-gradient(180deg,#071025 0%, #081226 50%, #0b1228 100%);
+      color:#e6edf3;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:24px;
+      line-height:1.4;
+    }
+
+    header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:20px;
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:56px;height:56px;
+      border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),#9f7aea);
+      display:grid;place-items:center;font-weight:800;color:white;font-size:20px;
+      box-shadow:0 6px 18px rgba(107,70,193,0.18);
+    }
+    h1{margin:0;font-size:20px}
+    .tag{color:var(--muted);font-size:13px}
+
+    nav{display:flex;gap:10px;align-items:center}
+    button.icon-btn{
+      background:transparent;border:1px solid rgba(255,255,255,0.06);
+      color:inherit;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;
+      backdrop-filter: blur(6px);
+    }
+    .main{
+      display:grid;
+      grid-template-columns: 240px 1fr;
+      gap:20px;
+      align-items:start;
+    }
+
+    /* sidebar */
+    aside{
+      background:var(--glass);
+      padding:16px;border-radius:14px;
+      border:1px solid rgba(255,255,255,0.03);
+      min-height:320px;
+    }
+    .search{
+      display:flex;gap:8px;margin-bottom:12px;
+    }
+    .search input{
+      flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+      background:transparent;color:inherit;
+    }
+    .categories{display:flex;flex-direction:column;gap:8px}
+    .category{
+      padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;
+      background:transparent;color:var(--muted);
+    }
+    .category.active{background:rgba(255,255,255,0.03);color:inherit;border-color:rgba(255,255,255,0.04);}
+
+    /* products grid */
+    .products{
+      display:grid;
+      grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+      gap:18px;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);
+      display:flex;flex-direction:column;gap:10px;
+    }
+    .thumb{
+      height:160px;border-radius:10px;background:#0d1320;display:grid;place-items:center;color:var(--muted);
+      font-size:48px;
+    }
+    .title{font-weight:700;font-size:15px}
+    .meta{color:var(--muted);font-size:13px}
+    .price{font-weight:800;color:var(--accent);font-size:16px}
+    .actions{display:flex;gap:8px;margin-top:auto}
+    .btn{
+      flex:1;padding:8px 10px;border-radius:9px;border:0;background:linear-gradient(90deg,var(--accent),#9f7aea);
+      color:white;font-weight:700;cursor:pointer;
+    }
+    .btn.ghost{
+      background:transparent;border:1px solid rgba(255,255,255,0.06);
+      color:inherit;font-weight:600;
+    }
+
+    /* cart drawer */
+    .cart-btn{
+      position:relative;
+    }
+    .cart-count{
+      position:absolute;top:-6px;right:-6px;background:#ff6b6b;color:white;padding:4px 7px;border-radius:999px;font-size:12px;font-weight:700;
+    }
+
+    /* drawer */
+    .drawer{
+      position:fixed;right:18px;top:80px;width:360px;max-width:92vw;height:70vh;background:linear-gradient(180deg,#061025,#07122a);
+      border-radius:14px;padding:14px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 10px 40px rgba(2,6,23,0.6);display:flex;flex-direction:column;gap:10px;
+      transform: translateX(120%);transition:transform .28s cubic-bezier(.2,.9,.3,1);
+      z-index:40;
+    }
+    .drawer.open{transform:translateX(0)}
+    .drawer h3{margin:0}
+    .cart-items{overflow:auto;flex:1;padding-right:6px}
+    .cart-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);margin-bottom:8px}
+    .cart-item .ci-thumb{width:60px;height:60px;border-radius:8px;background:#071224;display:grid;place-items:center;color:var(--muted)}
+    .qty{display:flex;gap:6px;align-items:center}
+    .qty button{padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;cursor:pointer}
+    .total{font-weight:800;font-size:18px;text-align:right}
+
+    footer{margin-top:22px;color:var(--muted);font-size:13px;text-align:center}
+
+    /* product modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(1,4,12,0.6);display:none;place-items:center;padding:20px;z-index:60;
+    }
+    .modal-backdrop.open{display:grid}
+    .modal{width:760px;max-width:98vw;background:linear-gradient(180deg,#071125,#091326);border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.04)}
+    .modal .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .modal .large-thumb{height:340px;border-radius:10px;background:#091224;display:grid;place-items:center;color:var(--muted);font-size:64px}
+    .modal .md-title{font-size:20px;margin:0}
+    @media (max-width:900px){
+      .main{grid-template-columns:1fr;gap:14px}
+      aside{order:2}
+      .modal .modal-grid{grid-template-columns:1fr}
+      .modal .large-thumb{height:220px}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">CG</div>
+    <div>
+      <h1>Choomantar Gali</h1>
+      <div class="tag">Magical merchandise for every fandom</div>
+    </div>
+  </div>
+
+  <nav>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="icon-btn" id="allProductsBtn">All Products</button>
+      <button class="icon-btn" id="featuredBtn">Featured</button>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-left:16px">
+      <button class="icon-btn cart-btn" id="openCartBtn">Cart <span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </nav>
+</header>
+
+<main class="main">
+  <aside>
+    <div class="search">
+      <input id="searchInput" placeholder="Search products or fandom (eg: wand, thor)" />
+      <button class="icon-btn" id="searchBtn">Search</button>
+    </div>
+
+    <div style="margin-bottom:10px;font-weight:700">Categories</div>
+    <div class="categories" id="categoryList">
+      <!-- generated -->
+    </div>
+
+    <div style="margin-top:14px;font-weight:700">Filters</div>
+    <label style="display:flex;gap:8px;align-items:center;margin-top:8px">
+      <input type="checkbox" id="inStockOnly" /> <span style="color:var(--muted)">Show in-stock only</span>
+    </label>
+  </aside>
+
+  <section>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h2 style="margin:0">Products</h2>
+      <div style="color:var(--muted)">Found <span id="resultsCount">0</span> items</div>
+    </div>
+
+    <div class="products" id="productsGrid">
+      <!-- product cards inserted here -->
+    </div>
+
+    <footer>
+      Prototype built for college project — no real payments. Use this as a starter template.
+    </footer>
+  </section>
+</main>
+
+<!-- Cart Drawer -->
+<div class="drawer" id="cartDrawer" aria-hidden="true">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h3>Your Cart</h3>
+    <div>
+      <button class="icon-btn" id="clearCartBtn">Clear</button>
+      <button class="icon-btn" id="closeCartBtn">Close</button>
+    </div>
+  </div>
+
+  <div class="cart-items" id="cartItems"></div>
+
+  <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
+    <div style="font-size:14px;color:var(--muted)">Taxes & shipping simulated at checkout</div>
+    <div style="text-align:right">
+      <div class="total" id="cartTotal">₹0</div>
+      <div style="font-size:12px;color:var(--muted)">Estimated total</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px">
+    <button class="btn ghost" id="continueShoppingBtn">Continue shopping</button>
+    <button class="btn" id="checkoutBtn">Checkout</button>
+  </div>
+</div>
+
+<!-- Product Modal -->
+<div class="modal-backdrop" id="productModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div>
+        <h3 class="md-title" id="mdTitle">Product Name</h3>
+        <div class="meta" id="mdMeta">Fandom • Category</div>
+      </div>
+      <div>
+        <button class="icon-btn" id="mdCloseBtn">Close</button>
+      </div>
+    </div>
+
+    <div class="modal-grid">
+      <div class="large-thumb" id="mdThumb">🪄</div>
+      <div>
+        <p id="mdDesc" style="color:var(--muted)">Longer product description goes here.</p>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
+          <div class="price" id="mdPrice">₹0</div>
+          <div style="color:var(--muted);font-size:13px">• <span id="mdStock">In stock</span></div>
+        </div>
+
+        <div style="margin-top:16px;display:flex;gap:8px;">
+          <input type="number" id="mdQty" value="1" min="1" style="width:84px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" />
+          <button class="btn" id="mdAddToCart">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Checkout Modal (simple) -->
+<div class="modal-backdrop" id="checkoutModal" aria-hidden="true">
+  <div class="modal" role="dialog">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h3 style="margin:0">Checkout (Simulation)</h3>
+      <button class="icon-btn" id="checkoutClose">Close</button>
+    </div>
+
+    <form id="checkoutForm" style="display:flex;flex-direction:column;gap:8px">
+      <input name="name" required placeholder="Full name" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" />
+      <input name="email" type="email" required placeholder="Email address" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" />
+      <input name="address" required placeholder="Shipping address" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" />
+      <div style="display:flex;gap:8px">
+        <input name="city" required placeholder="City" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" />
+        <input name="pincode" required placeholder="Pincode" style="width:120px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" />
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="color:var(--muted)">Total</div>
+        <div class="total" id="checkoutTotal">₹0</div>
+      </div>
+
+      <div style="display:flex;gap:8px">
+        <button class="btn ghost" type="button" id="checkoutCancel">Cancel</button>
+        <button class="btn" type="submit">Place order (simulated)</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  /***********************
+   * Sample product data *
+   ***********************/
+  const PRODUCTS = [
+    { id: 'hp-wand-01', title: "Elderwood Wand", fandom: "Harry Potter", category: "Wands", price: 899, desc: "Replica wand inspired by wizarding lore. Hand-finished, feels authentic.", stock: 12, emoji: "🪄" },
+    { id: 'hp-broom-01', title: "Nimbus II Broom (Mini)", fandom: "Harry Potter", category: "Brooms", price: 1299, desc: "Decorative mini broom for display or cosplay.", stock: 4, emoji: "🧹" },
+    { id: 'mar-thor-01', title: "Mjölnir (Collector)", fandom: "Marvel", category: "Weapons", price: 4999, desc: "Heavy metal replica of Thor's hammer with stand.", stock: 2, emoji: "🔨" },
+    { id: 'mar-bodysuit-01', title: "Iron Armor Bodysuit (L)", fandom: "Marvel", category: "Bodysuits", price: 3499, desc: "Cosplay bodysuit with printed armor details.", stock: 6, emoji: "🦾" },
+    { id: 'dc-bat-01', title: "Dark Knight Cape", fandom: "DC", category: "Costumes", price: 1799, desc: "Classic cape for Batman cosplay.", stock: 8, emoji: "🦇" },
+    { id: 'dis-dress-01', title: "Aurora Ballgown", fandom: "Disney", category: "Dresses", price: 2199, desc: "Princess-style dress with satin finish.", stock: 5, emoji: "👗" },
+    { id: 'hp-book-01', title: "Tales of Wizardry (Replica)", fandom: "Harry Potter", category: "Books", price: 699, desc: "Aged-look hardcover book replica for collectors.", stock: 20, emoji: "📚" }
+  ];
+
+  /***********************
+   * App state & helpers *
+   ***********************/
+  let state = {
+    products: PRODUCTS.slice(),
+    filter: { category: 'All', query: '', inStock: false },
+    cart: JSON.parse(localStorage.getItem('choomantar_cart') || '[]')
+  };
+
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+  function renderCategories(){
+    const cats = ['All', ...new Set(PRODUCTS.map(p=>p.fandom))];
+    const container = $('#categoryList');
+    container.innerHTML = '';
+    cats.forEach(c=>{
+      const el = document.createElement('div');
+      el.className = 'category' + (state.filter.category === c ? ' active' : '');
+      el.textContent = c;
+      el.addEventListener('click', ()=> {
+        state.filter.category = c;
+        renderCategories();
+        renderProducts();
+      });
+      container.appendChild(el);
+    });
+  }
+
+  function formatPrice(n){ return '₹' + n.toLocaleString('en-IN'); }
+
+  function filteredProducts(){
+    const q = state.filter.query.trim().toLowerCase();
+    return state.products.filter(p=>{
+      if(state.filter.category !== 'All' && p.fandom !== state.filter.category) return false;
+      if(state.filter.inStock && (!p.stock || p.stock <= 0)) return false;
+      if(q){
+        return (p.title + ' ' + p.fandom + ' ' + p.category + ' ' + p.desc).toLowerCase().includes(q);
+      }
+      return true;
+    });
+  }
+
+  function renderProducts(){
+    const grid = $('#productsGrid');
+    const list = filteredProducts();
+    $('#resultsCount').textContent = list.length;
+    grid.innerHTML = '';
+    for(const p of list){
+      const c = document.createElement('article');
+      c.className = 'card';
+      c.innerHTML = `
+        <div class="thumb" aria-hidden="true">${p.emoji}</div>
+        <div>
+          <div class="title">${p.title}</div>
+          <div class="meta">${p.fandom} • ${p.category}</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="price">${formatPrice(p.price)}</div>
+          <div style="text-align:right;font-size:13px;color:var(--muted)">${p.stock} in stock</div>
+        </div>
+        <div class="actions">
+          <button class="btn ghost" data-id="${p.id}" aria-label="View ${p.title}">View</button>
+          <button class="btn" data-buy="${p.id}" aria-label="Add ${p.title} to cart">Add</button>
+        </div>
+      `;
+      grid.appendChild(c);
+    }
+
+    // bind buttons
+    $$('.card .btn[data-id]').forEach(b => b.addEventListener('click', e=>{
+      const id = e.currentTarget.getAttribute('data-id');
+      openProductModal(id);
+    }));
+    $$('.card .btn[data-buy]').forEach(b => b.addEventListener('click', e=>{
+      const id = e.currentTarget.getAttribute('data-buy');
+      addToCart(id, 1);
+      openCart();
+    }));
+  }
+
+  /***********************
+   * Cart functionality  *
+   ***********************/
+  function saveCart(){ localStorage.setItem('choomantar_cart', JSON.stringify(state.cart)); }
+  function getCartCount(){ return state.cart.reduce((s,i)=>s+i.qty,0); }
+  function updateCartCount(){ $('#cartCount').textContent = getCartCount(); }
+
+  function addToCart(productId, qty = 1){
+    const product = PRODUCTS.find(p=>p.id===productId);
+    if(!product) return;
+    const entry = state.cart.find(c=>c.id===productId);
+    if(entry){
+      entry.qty += qty;
+    } else {
+      state.cart.push({ id: productId, qty });
+    }
+    saveCart();
+    renderCart();
+    updateCartCount();
+  }
+
+  function setQty(productId, qty){
+    const entry = state.cart.find(c=>c.id===productId);
+    if(!entry) return;
+    entry.qty = Math.max(1, qty);
+    saveCart();
+    renderCart();
+    updateCartCount();
+  }
+
+  function removeFromCart(productId){
+    state.cart = state.cart.filter(c=>c.id!==productId);
+    saveCart();
+    renderCart();
+    updateCartCount();
+  }
+
+  function clearCart(){
+    state.cart = [];
+    saveCart();
+    renderCart();
+    updateCartCount();
+  }
+
+  function cartTotal(){
+    return state.cart.reduce((sum,item)=>{
+      const p = PRODUCTS.find(x=>x.id===item.id) || { price:0 };
+      return sum + p.price * item.qty;
+    }, 0);
+  }
+
+  function renderCart(){
+    const container = $('#cartItems');
+    container.innerHTML = '';
+    if(state.cart.length === 0){
+      container.innerHTML = '<div style="color:var(--muted);padding:16px">Cart is empty — add magical items!</div>';
+      $('#cartTotal').textContent = formatPrice(0);
+      return;
+    }
+    for(const item of state.cart){
+      const p = PRODUCTS.find(x=>x.id===item.id);
+      const el = document.createElement('div');
+      el.className = 'cart-item';
+      el.innerHTML = `
+        <div class="ci-thumb">${p.emoji}</div>
+        <div style="flex:1">
+          <div style="font-weight:700">${p.title}</div>
+          <div style="color:var(--muted);font-size:13px">${p.fandom} • ${p.category}</div>
+          <div style="margin-top:6px;display:flex;align-items:center;justify-content:space-between">
+            <div class="qty">
+              <button data-decr="${p.id}">-</button>
+              <div style="padding:6px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.03)">${item.qty}</div>
+              <button data-incr="${p.id}">+</button>
+            </div>
+            <div style="font-weight:800">${formatPrice(p.price * item.qty)}</div>
+          </div>
+        </div>
+        <div>
+          <button class="icon-btn" data-remove="${p.id}">Remove</button>
+        </div>
+      `;
+      container.appendChild(el);
+    }
+
+    // bind qty & remove
+    container.querySelectorAll('[data-decr]').forEach(b => b.addEventListener('click', e=>{
+      const id = e.currentTarget.getAttribute('data-decr');
+      const entry = state.cart.find(c=>c.id===id);
+      if(entry){
+        if(entry.qty <= 1) removeFromCart(id);
+        else setQty(id, entry.qty - 1);
+      }
+    }));
+    container.querySelectorAll('[data-incr]').forEach(b => b.addEventListener('click', e=>{
+      const id = e.currentTarget.getAttribute('data-incr');
+      const entry = state.cart.find(c=>c.id===id);
+      if(entry) setQty(id, entry.qty + 1);
+    }));
+    container.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', e=>{
+      removeFromCart(e.currentTarget.getAttribute('data-remove'));
+    }));
+
+    $('#cartTotal').textContent = formatPrice(cartTotal());
+  }
+
+  /***********************
+   * Product modal UI    *
+   ***********************/
+  function openProductModal(id){
+    const p = PRODUCTS.find(x=>x.id===id);
+    if(!p) return;
+    $('#mdTitle').textContent = p.title;
+    $('#mdMeta').textContent = `${p.fandom} • ${p.category}`;
+    $('#mdDesc').textContent = p.desc;
+    $('#mdPrice').textContent = formatPrice(p.price);
+    $('#mdStock').textContent = p.stock > 0 ? `${p.stock} in stock` : 'Out of stock';
+    $('#mdThumb').textContent = p.emoji;
+    $('#mdQty').value = 1;
+    $('#mdAddToCart').setAttribute('data-id', p.id);
+    $('#productModal').classList.add('open');
+    $('#productModal').setAttribute('aria-hidden','false');
+  }
+  function closeProductModal(){
+    $('#productModal').classList.remove('open');
+    $('#productModal').setAttribute('aria-hidden','true');
+  }
+
+  /***********************
+   * Drawer controls     *
+   ***********************/
+  function openCart(){
+    $('#cartDrawer').classList.add('open');
+    $('#cartDrawer').setAttribute('aria-hidden','false');
+  }
+  function closeCart(){
+    $('#cartDrawer').classList.remove('open');
+    $('#cartDrawer').setAttribute('aria-hidden','true');
+  }
+
+  /***********************
+   * Checkout flow       *
+   ***********************/
+  function openCheckout(){
+    $('#checkoutModal').classList.add('open');
+    $('#checkoutModal').setAttribute('aria-hidden','false');
+    $('#checkoutTotal').textContent = formatPrice(cartTotal());
+  }
+  function closeCheckout(){
+    $('#checkoutModal').classList.remove('open');
+    $('#checkoutModal').setAttribute('aria-hidden','true');
+  }
+
+  /***********************
+   * Event bindings      *
+   ***********************/
+  document.addEventListener('DOMContentLoaded', ()=>{
+    renderCategories();
+    renderProducts();
+    renderCart();
+    updateCartCount();
+
+    // search & filters
+    $('#searchBtn').addEventListener('click', ()=>{
+      state.filter.query = $('#searchInput').value;
+      renderProducts();
+    });
+    $('#searchInput').addEventListener('keyup', (e)=>{
+      if(e.key === 'Enter'){ state.filter.query = $('#searchInput').value; renderProducts(); }
+    });
+    $('#inStockOnly').addEventListener('change', (e)=>{
+      state.filter.inStock = e.target.checked;
+      renderProducts();
+    });
+
+    // header buttons
+    $('#openCartBtn').addEventListener('click', ()=> openCart());
+    $('#closeCartBtn').addEventListener('click', ()=> closeCart());
+    $('#clearCartBtn').addEventListener('click', ()=> {
+      if(confirm('Clear cart?')) clearCart();
+    });
+    $('#continueShoppingBtn').addEventListener('click', ()=> closeCart());
+
+    // modal controls
+    $('#mdCloseBtn').addEventListener('click', ()=> closeProductModal());
+    $('#productModal').addEventListener('click', (e)=>{
+      if(e.target === document.getElementById('productModal')) closeProductModal();
+    });
+    $('#mdAddToCart').addEventListener('click', (e)=>{
+      const id = e.currentTarget.getAttribute('data-id');
+      const qty = parseInt($('#mdQty').value || '1', 10);
+      addToCart(id, qty);
+      closeProductModal();
+      openCart();
+    });
+
+    // cart interactions already bound inside renderCart
+
+    // checkout
+    $('#checkoutBtn').addEventListener('click', ()=> {
+      if(state.cart.length === 0) return alert('Your cart is empty.');
+      openCheckout();
+    });
+    $('#checkoutClose').addEventListener('click', closeCheckout);
+    $('#checkoutCancel').addEventListener('click', closeCheckout);
+    $('#checkoutForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      // Simulate order placement
+      const name = e.target.name.value;
+      const email = e.target.email.value;
+      alert(`Thanks ${name}! Your order of ${getCartCount()} items (total ${formatPrice(cartTotal())}) is placed (simulation). A confirmation will be sent to ${email}.`);
+      clearCart();
+      closeCheckout();
+      closeCart();
+    });
+
+    // small helpers
+    $('#allProductsBtn').addEventListener('click', ()=> { state.filter.category = 'All'; renderCategories(); renderProducts(); });
+    $('#featuredBtn').addEventListener('click', ()=> {
+      // simulate "featured" by showing items with price >= 2000
+      state.products = PRODUCTS.slice().sort((a,b)=> b.price - a.price);
+      state.filter.query = '';
+      renderProducts();
+    });
+  });
+
+  // close checkout on backdrop click
+  $('#checkoutModal').addEventListener('click', (e)=>{
+    if(e.target === $('#checkoutModal')) closeCheckout();
+  });
+
+</script>
+
+</body>
+</html>
